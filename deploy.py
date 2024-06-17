@@ -14,8 +14,11 @@ import random
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
 
+model_file_name = 'dermoally-modelv7.h5'
+model_path = os.path.join(os.getcwd(), model_file_name)
+
 # Load the trained model
-model = tf.keras.models.load_model('dermoally-modelv7.h5', compile=False)
+model = tf.keras.models.load_model(model_path, compile=False)
 
 # Labels should match those used in your training
 labels = ['Acne', 'ActinicKeratosis', 'Blackheads', 'Herpes', 'Keloid', 'KeratosisSeborrheic', 'Milia', 'Pityriasis versicolor', 'Ringworm']

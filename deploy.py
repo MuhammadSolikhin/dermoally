@@ -9,12 +9,29 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from functools import wraps
 import random
+from google.cloud import storage
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
 
-# Load the trained model (adjust the path as needed)
-model = tf.keras.models.load_model('dermoally-modelv7.h5', compile=False)
+def download_model_from_gcs(bucket_name, source_blob_name, destination_file_name):
+    """Downloads a blob from the bucket."""
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(source_blob_name)
+    blob.download_to_filename(destination_file_name)
+    print(f"Downloaded {source_blob_name} from bucket {bucket_name} to {destination_file_name}.")
+
+# Define the GCS bucket name and the model path
+bucket_name = 'capstone-425213'
+model_path_in_gcs = 'dermoally-modelv7.h5'
+local_model_path = 'dermoally-modelv7.h5'
+
+# Download the model from GCS
+download_model_from_gcs(bucket_name, model_path_in_gcs, local_model_path)
+
+# Load the trained model
+model = tf.keras.models.load_model(local_model_path, compile=False)
 
 # Labels should match those used in your training
 labels = ['Acne', 'ActinicKeratosis', 'Blackheads', 'Herpes', 'Keloid', 'KeratosisSeborrheic', 'Milia', 'Pityriasis versicolor', 'Ringworm']

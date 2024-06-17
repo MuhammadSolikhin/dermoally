@@ -4,6 +4,7 @@ import tensorflow as tf
 from PIL import Image
 import mysql.connector
 import os
+import logging
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
@@ -14,9 +15,19 @@ from google.cloud import storage
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
 
+secret_path = 'secrets/GOOGLE_APPLICATION_CREDENTIALS'
+
+logging.basicConfig(level=logging.INFO)
+
 def download_model_from_gcs(bucket_name, source_blob_name, destination_file_name):
     """Downloads a blob from the bucket."""
-    storage_client = storage.Client()
+    if os.path.exists(secret_path):
+        logging.info("Loading credentials from secret path.")
+        storage_client = storage.Client.from_service_account_json(secret_path)
+    else:
+        logging.info("Using default application credentials.")
+        storage_client = storage.Client()
+    
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(source_blob_name)
     blob.download_to_filename(destination_file_name)

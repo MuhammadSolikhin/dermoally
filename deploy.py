@@ -24,7 +24,7 @@ def get_mysql_connection():
     return mysql.connector.connect(
         host='34.128.126.40',
         user='root',
-        password='myCpastone1234',
+        password='capstone123',
         database='capstone'
     )
 

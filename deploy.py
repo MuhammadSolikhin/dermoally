@@ -47,6 +47,11 @@ def authenticate_user(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
+@app.route('/', methods=['GET'])
+def get_message():
+    return jsonify(message='Hey, your app is working')
+
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()

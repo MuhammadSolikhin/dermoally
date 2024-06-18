@@ -13,7 +13,7 @@ import random
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
-
+print(tf.__version__)
 model_file_name = 'dermoally-modelv7.h5'
 model_path = os.path.join(os.getcwd(), model_file_name)
 
